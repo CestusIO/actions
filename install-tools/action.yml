@@ -1,0 +1,15 @@
+name: Install tools
+description: installs tools
+inputs:
+  token:
+    description: github token to download from authenticated repos
+    required: true
+runs:
+  using: "composite" # Mandatory parameter
+  steps:
+    {}
+    # - name: Install fabricator-generate-project-go
+    #   uses: CestusIO/action-install-release@main
+    #   with: # Grab the latest version
+    #     repo: CestusIO/fabricator-generate-project-go
+    #     token: ${{inputs.token}}

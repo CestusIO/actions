@@ -1,0 +1,119 @@
+name: golang-ci-build_pr
+on:
+  # pull_request:
+  #   branches: [main]
+  workflow_call:
+    inputs:
+      go-version:
+        description: the go version
+        required: false
+        type: string
+        default: "1.18"
+      actions-ref:
+        description: the ref actions will be checkout at
+        type: string
+        required: false
+        default: "main"
+    secrets:
+      token:
+        required: true
+        description: secret used to check out repository. If actions in this workflow should trigger other actions provice as PAT otherwise the github_token will suffice
+
+jobs:
+  build-go:
+    name: 🏗 build-go
+    runs-on: ubuntu-latest
+    steps:
+      - name: "☁️checkout repository"
+        uses: actions/checkout@v2
+      - name: "☁️ checkout action repository"
+        uses: actions/checkout@v2
+        with:
+          repository: CestusIO/action
+          ref: ${{inputs.actions-ref}}
+          path: .github/actions
+      - name: 🔑 Granting private modules access
+        run: |
+          git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/CestusIO".insteadOf "https://github.com/CestusIO"
+      - name: Install tools
+        uses: ./.github/actions/install-tools
+        with:
+          token: ${{secrets.token}}
+      - name: "🔧 setup go"
+        uses: ./.github/actions/setup-go
+        id: setup_go
+        with:
+          go-version: ${{inputs.go-version}}
+      - name: "🏗 Build"
+        run: |
+          make build_all
+  test-go:
+    name: 🧪 test-go
+    runs-on: ubuntu-latest
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v2
+      - name: "☁️ checkout action repository"
+        uses: actions/checkout@v2
+        with:
+          repository: CestusIO/action
+          ref: ${{inputs.actions-ref}}
+          path: .github/actions
+      - name: 🔑 Granting private modules access
+        run: |
+          git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/CestusIO".insteadOf "https://github.com/CestusIO"
+      - name: Install tools
+        uses: ./.github/actions/install-tools
+        with:
+          token: ${{secrets.token}}
+      - name: "🔧 setup go"
+        uses: ./.github/actions/setup-go
+        id: setup_go
+        with:
+          go-version: ${{inputs.go-version}}
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          version: "3.17.3"
+          repo-token: ${{secrets.token}}
+      - name: "🧪 Test"
+        run: |
+          make test
+  codegen-go:
+    name: 🔌 codegen
+    runs-on: ubuntu-latest
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v2
+      - name: "☁️ checkout action repository"
+        uses: actions/checkout@v2
+        with:
+          repository: CestusIO/action
+          ref: ${{inputs.actions-ref}}
+          path: .github/actions
+      - name: 🔑 Granting private modules access
+        run: |
+          git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/CestusIO".insteadOf "https://github.com/CestusIO"
+      - name: Install tools
+        uses: ./.github/actions/install-tools
+        with:
+          token: ${{secrets.token}}
+      - name: "🔧 setup go"
+        uses: ./.github/actions/setup-go
+        id: setup_go
+        with:
+          go-version: ${{inputs.go-version}}
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          version: "3.17.3"
+          repo-token: ${{secrets.token}}
+      - name: "🔌 generate"
+        run: |
+          make install_tools
+          make generate
+          git diff --exit-code -- .
+      - name: "🧪 check tidyness of go.mod and go.sum"
+        run: |
+          go mod tidy -compat=1.17
+          git diff --exit-code -- .
