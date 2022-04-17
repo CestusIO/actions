@@ -1,0 +1,58 @@
+name: golang-tag
+on:
+  # push:
+  #   tags:
+  #     - "v*"
+  workflow_call:
+    inputs:
+      go-version:
+        description: the go version
+        required: false
+        type: string
+        default: "1.18"
+      actions-ref:
+        description: the ref actions will be checkout at
+        type: string
+        required: false
+        default: "main"
+    secrets:
+      token:
+        required: true
+        description: secret used to check out repository. If actions in this workflow should trigger other actions provice as PAT otherwise the github_token will suffice
+
+jobs:
+  release:
+    name: "🚀 release package"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "☁️checkout repository"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: "☁️ checkout action repository"
+        uses: actions/checkout@v2
+        with:
+          repository: CestusIO/action
+          ref: ${{inputs.actions-ref}}
+          path: .github/actions
+      - name: 🔑 Granting private modules access
+        run: |
+          git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/CestusIO".insteadOf "https://github.com/CestusIO"
+      - name: Install tools
+        uses: ./.github/actions/install-tools
+        with:
+          token: ${{secrets.token}}
+      - name: "🔧 setup go"
+        uses: ./.github/actions/setup-go
+        id: setup_go
+        with:
+          go-version: ${{inputs.go-version}}
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.token }}
+          BUILD_VERSION: ${{ steps.setup_go.outputs.svermaker-go-build-version }}
