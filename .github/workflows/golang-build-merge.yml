@@ -142,7 +142,7 @@ jobs:
           go-version: ${{inputs.go-version}}
       - name: "🙀 Autotag"
         if: steps.setup_go.outputs.svermaker-is-release == 'true'
-        uses: CestusIO/action/create-tag@main
+        uses: CestusIO/actions/create-tag@main
         id: create_tag
         with:
           tag: ${{ steps.setup_go.outputs.svermaker-go-build-version }}
