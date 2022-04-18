@@ -44,7 +44,7 @@ jobs:
       - name: "☁️ checkout action repository"
         uses: actions/checkout@v2
         with:
-          repository: CestusIO/action
+          repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
           path: .github/actions
       - name: Install tools
