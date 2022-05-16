@@ -7,8 +7,6 @@ inputs:
 runs:
   using: "composite" # Mandatory parameter
   steps:
-    - run: echo "hello"
-      shell: bash
     - name: Install fabricator-generate-project-go
       uses: CestusIO/action-install-release@main
       with: # Grab the latest version
@@ -23,4 +21,9 @@ runs:
       uses: CestusIO/action-install-release@main
       with: # Grab the latest version
         repo: CestusIO/fabricator-generate-go
+        token: ${{inputs.token}}
+    - name: Install fabricator-generate-tool-go
+      uses: CestusIO/action-install-release@main
+      with: # Grab the latest version
+        repo: CestusIO/fabricator-generate-tool-go
         token: ${{inputs.token}}
