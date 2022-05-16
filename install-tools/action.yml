@@ -9,8 +9,18 @@ runs:
   steps:
     - run: echo "hello"
       shell: bash
-    # - name: Install fabricator-generate-project-go
-    #   uses: CestusIO/action-install-release@main
-    #   with: # Grab the latest version
-    #     repo: CestusIO/fabricator-generate-project-go
-    #     token: ${{inputs.token}}
+    - name: Install fabricator-generate-project-go
+      uses: CestusIO/action-install-release@main
+      with: # Grab the latest version
+        repo: CestusIO/fabricator-generate-project-go
+        token: ${{inputs.token}}
+    - name: Install fabricator-generate-plugin-go
+      uses: CestusIO/action-install-release@main
+      with: # Grab the latest version
+        repo: CestusIO/fabricator-generate-plugin-go
+        token: ${{inputs.token}}
+    - name: Install fabricator-generate-go
+      uses: CestusIO/action-install-release@main
+      with: # Grab the latest version
+        repo: CestusIO/fabricator-generate-go
+        token: ${{inputs.token}}
