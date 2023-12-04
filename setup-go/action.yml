@@ -57,7 +57,7 @@ runs:
       if: "inputs.go-tooling-only == 'false'"
       shell: bash
       run: |
-        export GOPRIVATE=code.ops.umanaia.org/*
+        export GOPRIVATE=code.cestus.io/*
         go mod download
     - uses: benjlevesque/short-sha@v2.2
       id: short-sha

@@ -19,7 +19,7 @@ svermakerBuildVersion   ?= unreleased
 svermakerHelmLabel 	    ?= unreleased
 goModuleBuildVersion    ?= unreleased
 # GOPRIVATE will disable go cache
-export GOPRIVATE        := github.com/UmanaiaCI/*
+export GOPRIVATE        := code.cestus.io/*
 
 # additional LDFGLAGS (e.g. -w -s)
 ADDITIONALLDFLAGS       ?= 

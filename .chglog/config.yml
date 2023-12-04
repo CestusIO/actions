@@ -3,7 +3,7 @@ style: gitlab
 template: CHANGELOG.tpl.md
 info:
   title: CHANGELOG
-  repository_url: https://github.com/UmanaiaCI/actions
+  repository_url: https://github.com/CestusIO/actions
 options:
   commits:
   # filters:
