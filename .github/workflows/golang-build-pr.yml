@@ -141,7 +141,7 @@ jobs:
           git diff --exit-code -- .
   prerelease-version:
     runs-on: ubuntu-latest
-    needs: [get-commit-title, build-go, test-go, codegen-go ]
+    needs: [get-commit-title, build-go, test-go, codegen-go]
     steps:
       - name: "☁️ checkout repository"
         uses: actions/checkout@v3
@@ -150,15 +150,13 @@ jobs:
       - name: "☁️ checkout action repository"
         uses: actions/checkout@v3
         with:
-          repository: UmanaiaCI/actions
+          repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
           path: .github/actions
           token: ${{secrets.token}}
       - name: 🔑 Granting private modules access
         run: |
-          git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/UmanaiaCI".insteadOf "https://github.com/UmanaiaCI"
-          git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/UmanaiaOps".insteadOf "https://github.com/UmanaiaOps"
-          git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/UmanaiaDev".insteadOf "https://github.com/UmanaiaDev"
+          git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/CestusIO".insteadOf "https://github.com/CestusIO"
       - name: Install tools
         uses: ./.github/actions/install-tools
         with:
@@ -173,7 +171,7 @@ jobs:
         run: echo ${{ needs.get-commit-title.outputs.text }}
       - name: "🙀 Release Candidate"
         if: "contains(needs.get-commit-title.outputs.text, '[releasecandidate]')"
-        uses: UmanaiaCI/actions/create-tag@main
+        uses: CestusIO/actions/create-tag@main
         id: create_tag
         with:
           tag: ${{ steps.setup_go.outputs.svermaker-go-build-version }}
