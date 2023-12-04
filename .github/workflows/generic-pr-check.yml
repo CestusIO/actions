@@ -40,16 +40,6 @@ jobs:
       - name: 🔑 Granting private modules access
         run: |
           git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/CestusIO".insteadOf "https://github.com/CestusIO"
-      - name: Install tools
-        uses: ./.github/actions/install-tools
-        with:
-          token: ${{secrets.token}}
-      - name: "🔧 setup go"
-        uses: ./.github/actions/setup-go
-        id: setup_go
-        with:
-          go-version: ${{inputs.go-version}}
-          go-tooling-only: "true"
       - name: "🧪 Validate commit message(s)"
         run: |
           curl -sf https://gobinaries.com/aevea/commitsar@v0.18.0 | sh

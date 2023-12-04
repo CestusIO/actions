@@ -139,3 +139,41 @@ jobs:
         run: |
           go mod tidy
           git diff --exit-code -- .
+  prerelease-version:
+    runs-on: ubuntu-latest
+    needs: [get-commit-title, build-go, test-go, codegen-go ]
+    steps:
+      - name: "☁️ checkout repository"
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.token }}
+      - name: "☁️ checkout action repository"
+        uses: actions/checkout@v3
+        with:
+          repository: UmanaiaCI/actions
+          ref: ${{inputs.actions-ref}}
+          path: .github/actions
+          token: ${{secrets.token}}
+      - name: 🔑 Granting private modules access
+        run: |
+          git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/UmanaiaCI".insteadOf "https://github.com/UmanaiaCI"
+          git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/UmanaiaOps".insteadOf "https://github.com/UmanaiaOps"
+          git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/UmanaiaDev".insteadOf "https://github.com/UmanaiaDev"
+      - name: Install tools
+        uses: ./.github/actions/install-tools
+        with:
+          token: ${{secrets.token}}
+      - name: "🔧 setup go"
+        uses: ./.github/actions/setup-go
+        id: setup_go
+        with:
+          go-version: ${{inputs.go-version}}
+          go-tooling-only: "true"
+      - name: Echo commit message
+        run: echo ${{ needs.get-commit-title.outputs.text }}
+      - name: "🙀 Release Candidate"
+        if: "contains(needs.get-commit-title.outputs.text, '[releasecandidate]')"
+        uses: UmanaiaCI/actions/create-tag@main
+        id: create_tag
+        with:
+          tag: ${{ steps.setup_go.outputs.svermaker-go-build-version }}
