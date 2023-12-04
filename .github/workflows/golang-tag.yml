@@ -49,7 +49,7 @@ jobs:
         with:
           go-version: ${{inputs.go-version}}
       - name: Install Protoc
-        uses: ardino/setup-protoc@av1
+        uses: arduino/setup-protoc@av1
         with:
           version: "3.20.1"
           repo-token: ${{secrets.token}}
