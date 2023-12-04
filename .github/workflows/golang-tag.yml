@@ -9,7 +9,7 @@ on:
         description: the go version
         required: false
         type: string
-        default: "1.18"
+        default: "~1.21.3"
       actions-ref:
         description: the ref actions will be checkout at
         type: string
@@ -26,15 +26,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "☁️checkout repository"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: "☁️ checkout action repository"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
           path: .github/actions
+          token: ${{secrets.token}}
       - name: 🔑 Granting private modules access
         run: |
           git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/CestusIO".insteadOf "https://github.com/CestusIO"
@@ -47,12 +48,23 @@ jobs:
         id: setup_go
         with:
           go-version: ${{inputs.go-version}}
+      - name: Install Protoc
+        uses: ardino/setup-protoc@av1
+        with:
+          version: "3.20.1"
+          repo-token: ${{secrets.token}}
+      - name: "🔌 generate"
+        run: |
+          make install_tools
+          make generate
+          git diff --exit-code -- .
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+        uses: goreleaser/goreleaser-action@v4
         with:
           distribution: goreleaser
           version: latest
-          args: release --rm-dist
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.token }}
           BUILD_VERSION: ${{ steps.setup_go.outputs.svermaker-go-build-version }}
+
