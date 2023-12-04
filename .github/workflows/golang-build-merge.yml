@@ -8,7 +8,7 @@ on:
         description: the go version
         required: false
         type: string
-        default: "1.18"
+        default: "~1.21.3"
       actions-ref:
         description: the ref actions will be checkout at
         type: string
@@ -25,13 +25,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "☁️checkout repository"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: "☁️ checkout action repository"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
           path: .github/actions
+          token: ${{secrets.token}}
       - name: 🔑 Granting private modules access
         run: |
           git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/CestusIO".insteadOf "https://github.com/CestusIO"
@@ -45,6 +46,9 @@ jobs:
         with:
           go-version: ${{inputs.go-version}}
       - name: "🏗 Build"
+        env:
+          svermakerRelease: ${{ steps.setup_go.outputs. svermaker-is-release }}
+          goModuleBuildVersion: ${{ steps.setup_go.outputs.svermaker-go-build-version }}
         run: |
           make build_all
   test-go:
@@ -52,13 +56,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "☁️ checkout repository"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: "☁️ checkout action repository"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
           path: .github/actions
+          token: ${{secrets.token}}
       - name: 🔑 Granting private modules access
         run: |
           git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/CestusIO".insteadOf "https://github.com/CestusIO"
@@ -74,7 +79,7 @@ jobs:
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
         with:
-          version: "3.17.3"
+          version: "3.20.1"
           repo-token: ${{secrets.token}}
       - name: "🧪 Test"
         run: |
@@ -91,6 +96,7 @@ jobs:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
           path: .github/actions
+          token: ${{secrets.token}}
       - name: 🔑 Granting private modules access
         run: |
           git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/CestusIO".insteadOf "https://github.com/CestusIO"
@@ -106,7 +112,7 @@ jobs:
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
         with:
-          version: "3.17.3"
+          version: "3.20.1"
           repo-token: ${{secrets.token}}
       - name: "🔌 generate"
         run: |
@@ -115,7 +121,7 @@ jobs:
           git diff --exit-code -- .
       - name: "🧪 check tidyness of go.mod and go.sum"
         run: |
-          go mod tidy -compat=1.17
+          go mod tidy
           git diff --exit-code -- .
   management-go:
     name: "🙀 management"
@@ -123,15 +129,16 @@ jobs:
     needs: [build-go, test-go, codegen-go]
     steps:
       - name: "☁️ checkout repository"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.token }}
       - name: "☁️ checkout action repository"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
           path: .github/actions
+          token: ${{secrets.token}}
       - name: 🔑 Granting private modules access
         run: |
           git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/CestusIO".insteadOf "https://github.com/CestusIO"

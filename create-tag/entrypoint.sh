@@ -1,6 +1,8 @@
 #!/bin/sh
 
 set -eu
+git config --global --add safe.directory "${GITHUB_WORKSPACE}"
+git config --system --add safe.directory "${GITHUB_WORKSPACE}"
 
 if [ -z "${INPUT_TAG}" ]; then
   echo "[create-tag] No tag supplied"
