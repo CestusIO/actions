@@ -26,34 +26,35 @@ runs:
       with:
         go-version: ${{ inputs.go-version }}
         check-latest: true
-    - name: Go Cache paths
-      if: "inputs.go-tooling-only == 'false'"
-      id: go-cache-paths
-      shell: bash
-      run: |
-        echo "go-build=$(go env GOCACHE)" >> $GITHUB_OUTPUT
-        echo "go-mod=$(go env GOMODCACHE)" >> $GITHUB_OUTPUT
-    - name: Go Build Cache
-      if: "inputs.go-tooling-only == 'false'"
-      uses: actions/cache@v3
-      with:
-        path: ${{ steps.go-cache-paths.outputs.go-build }}
-        key: ${{ runner.os }}-go-build-${{ github.ref }}-${{ hashFiles('**/go.sum', '**/Makefile') }}
-        restore-keys: |
-          ${{ runner.os }}-go-build-${{ github.ref }}-
-          ${{ runner.os }}-go-build-
-    - name: Go Mod Cache
-      uses: actions/cache@v3
-      if: "inputs.go-tooling-only == 'false'"
-      with:
-        path: ${{ steps.go-cache-paths.outputs.go-mod }}
-        key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum', '**/Makefile') }}
-        restore-keys: |
-          ${{ runner.os }}-go-mod-
-    - name: Add ~/go/bin to PATH
-      shell: bash
-      run: |
-        echo "/home/runner/go/bin" >> $GITHUB_PATH
+        cache-dependency-path: "**/*.sum"
+    # - name: Go Cache paths
+    #   if: "inputs.go-tooling-only == 'false'"
+    #   id: go-cache-paths
+    #   shell: bash
+    #   run: |
+    #     echo "go-build=$(go env GOCACHE)" >> $GITHUB_OUTPUT
+    #     echo "go-mod=$(go env GOMODCACHE)" >> $GITHUB_OUTPUT
+    # - name: Go Build Cache
+    #   if: "inputs.go-tooling-only == 'false'"
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: ${{ steps.go-cache-paths.outputs.go-build }}
+    #     key: ${{ runner.os }}-go-build-${{ github.ref }}-${{ hashFiles('**/go.sum', '**/Makefile') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-go-build-${{ github.ref }}-
+    #       ${{ runner.os }}-go-build-
+    # - name: Go Mod Cache
+    #   uses: actions/cache@v3
+    #   if: "inputs.go-tooling-only == 'false'"
+    #   with:
+    #     path: ${{ steps.go-cache-paths.outputs.go-mod }}
+    #     key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum', '**/Makefile') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-go-mod-
+    # - name: Add ~/go/bin to PATH
+    #   shell: bash
+    #   run: |
+    #     echo "/home/runner/go/bin" >> $GITHUB_PATH
     - name: Download all Go modules
       if: "inputs.go-tooling-only == 'false'"
       shell: bash
