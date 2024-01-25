@@ -26,11 +26,11 @@ jobs:
       text: ${{ steps.get_head_commit_title.outputs.title }}
     steps:
       - name: "☁️checkout repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: "☁️ checkout action repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
@@ -44,9 +44,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "☁️checkout repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "☁️ checkout action repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
@@ -72,9 +72,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "☁️ checkout action repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
@@ -105,9 +105,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "☁️ checkout action repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
@@ -147,12 +147,12 @@ jobs:
         run: echo ${{ needs.get-commit-title.outputs.text }}
       - name: "☁️ checkout repository"
         if: "contains(needs.get-commit-title.outputs.text, '[releasecandidate]')"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.token }}
       - name: "☁️ checkout action repository"
         if: "contains(needs.get-commit-title.outputs.text, '[releasecandidate]')"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
