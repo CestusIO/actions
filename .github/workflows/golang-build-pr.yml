@@ -143,11 +143,15 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-commit-title, build-go, test-go, codegen-go]
     steps:
+      - name: Echo commit message
+        run: echo ${{ needs.get-commit-title.outputs.text }}
       - name: "☁️ checkout repository"
+        if: "contains(needs.get-commit-title.outputs.text, '[releasecandidate]')"
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.token }}
       - name: "☁️ checkout action repository"
+        if: "contains(needs.get-commit-title.outputs.text, '[releasecandidate]')"
         uses: actions/checkout@v3
         with:
           repository: CestusIO/actions
@@ -155,20 +159,22 @@ jobs:
           path: .github/actions
           token: ${{secrets.token}}
       - name: 🔑 Granting private modules access
+        if: "contains(needs.get-commit-title.outputs.text, '[releasecandidate]')"
         run: |
           git config --global url."https://${{ secrets.token }}:x-oauth-basic@github.com/CestusIO".insteadOf "https://github.com/CestusIO"
       - name: Install tools
+        if: "contains(needs.get-commit-title.outputs.text, '[releasecandidate]')"
         uses: ./.github/actions/install-tools
         with:
           token: ${{secrets.token}}
       - name: "🔧 setup go"
+        if: "contains(needs.get-commit-title.outputs.text, '[releasecandidate]')"
         uses: ./.github/actions/setup-go
         id: setup_go
         with:
           go-version: ${{inputs.go-version}}
           go-tooling-only: "true"
-      - name: Echo commit message
-        run: echo ${{ needs.get-commit-title.outputs.text }}
+
       - name: "🙀 Release Candidate"
         if: "contains(needs.get-commit-title.outputs.text, '[releasecandidate]')"
         uses: CestusIO/actions/create-tag@main
