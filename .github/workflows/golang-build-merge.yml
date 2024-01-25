@@ -25,9 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "☁️checkout repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "☁️ checkout action repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
@@ -56,9 +56,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "☁️ checkout action repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
@@ -89,9 +89,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "☁️ checkout action repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
@@ -129,11 +129,11 @@ jobs:
     needs: [build-go, test-go, codegen-go]
     steps:
       - name: "☁️ checkout repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.token }}
       - name: "☁️ checkout action repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: CestusIO/actions
           ref: ${{inputs.actions-ref}}
